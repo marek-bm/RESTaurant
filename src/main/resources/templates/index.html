@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RESTaurant</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+
+<h2>Add a new order</h2>
+<form id="addForm">
+    <p>Name: <input type="text" id="cafeType"></p>
+    <button id="addOrder">Add order</button>
+</form>
+<div id="openOrders">
+    <h2>Client's Orders</h2>
+    <ul id="orders"> Coffee Orderss</ul>
+</div>
+
+
+<script type="application/javascript">
+    $(document).ready(function () {
+
+        document.getElementById("addForm").addEventListener('submit', postOrder);
+        // document.getElementById("orders").addEventListener('click', inProgress);
+
+        changeStatus();
+        loadAll();
+
+        function loadAll() {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/order/',
+                async: false,
+                success: function (data) {
+                    console.log('success', data);
+                    var ordersFetched = data["_embedded"]["orderList"];
+                    console.log('embedded', ordersFetched);
+                    for (var i in ordersFetched) {
+                        console.log('[i]', ordersFetched[i]);
+                        var currentItem = ordersFetched[i];
+                        var status = currentItem["status"];
+                        var order = currentItem["orderedItems"];
+                        var links = currentItem["_links"];
+                        var inProgressUrl = links["in-progress"]['href'];
+                        var completeUrl = links["completed"]['href'];
+
+                        $("#orders").append(
+                            "<li>" + status + " " + order + " " +
+                            // '<button id="progressing" formaction='+inProgressUrl+' onClick="window.location.reload();">In-progress</button>'+ " "+
+                            '<button id="progressing" formaction=' + inProgressUrl + '>In-progress</button>' + " " +
+                            // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
+                            '<button id="complete" formaction=' + completeUrl + '>Complete</button>' +
+                            "</li>");
+
+                        // if(status=='IN_PROGRESS'){
+                        //     hideButton('progressing');
+                        // }
+                        //
+                        // if(status=='COMPLETED'){
+                        //     hideButton('progressing');
+                        //     hideButton('complete');
+                        // }
+                    }
+                }
+            });
+        }
+
+        function postOrder() {
+            var order = document.getElementById('cafeType').value;
+            console.log(order);
+            if (order == "") {
+                alert("Order cannot be empty");
+            } else {
+                var toDB = {orderedItems: order};
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:8080/order/',
+                    // async: true,
+                    data: JSON.stringify(toDB),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                });
+            }
+        }
+
+
+        function changeStatus() {
+            $('#openOrders').click(function (event) {
+                var element = $(event.target.nodeName);
+                var tag = event.target.tagName;
+                var id = event.target.id;
+                console.log('tag', tag);
+                console.log('id', id);
+                if (element.is('BUTTON')) {
+                    var link = event.target.getAttribute("formaction");
+                    console.log('PUT link', link);
+                    $.ajax({
+                        type: 'PUT',
+                        url: link,
+                        data: "",
+                        contentType: "application/json; charset=utf-8"
+                    });
+                    $(event.target).hide();
+                }
+            });
+        }
+
+        // function hideButton(id) {
+        //     $('#'+id).hide();
+        // }
+
+    });
+
+
+</script>
+</body>
+</html>

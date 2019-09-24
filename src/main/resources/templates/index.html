@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>RESTaurant</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -13,8 +14,17 @@
     <button id="addOrder">Add order</button>
 </form>
 <div id="openOrders">
-    <h2>Client's Orders</h2>
+    <h2>New Orders</h2>
     <ul id="orders"> Coffee Orderss</ul>
+</div>
+
+<div id="in-progress">
+    <h2>Orders In-Progress</h2>
+    <ul> Coffee Orderss</ul>
+</div>
+
+<div id="comleted">
+
 </div>
 
 
@@ -25,45 +35,62 @@
         // document.getElementById("orders").addEventListener('click', inProgress);
 
         changeStatus();
-        loadAll();
+        loadAllNotCompletedOrders();
 
-        function loadAll() {
+        function loadAllNotCompletedOrders() {
+
             $.ajax({
                 type: 'GET',
                 url: 'http://localhost:8080/order/',
-                async: false,
+                async: true,
                 success: function (data) {
+                    //sort data
                     console.log('success', data);
                     var ordersFetched = data["_embedded"]["orderList"];
-                    console.log('embedded', ordersFetched);
+                    var ordersOpen = [];
+                    var ordersInProgress = [];
                     for (var i in ordersFetched) {
-                        console.log('[i]', ordersFetched[i]);
-                        var currentItem = ordersFetched[i];
-                        var status = currentItem["status"];
-                        var order = currentItem["orderedItems"];
-                        var links = currentItem["_links"];
-                        var inProgressUrl = links["in-progress"]['href'];
-                        var completeUrl = links["completed"]['href'];
-
-                        $("#orders").append(
-                            "<li>" + status + " " + order + " " +
-                            // '<button id="progressing" formaction='+inProgressUrl+' onClick="window.location.reload();">In-progress</button>'+ " "+
-                            '<button id="progressing" formaction=' + inProgressUrl + '>In-progress</button>' + " " +
-                            // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
-                            '<button id="complete" formaction=' + completeUrl + '>Complete</button>' +
-                            "</li>");
-
-                        // if(status=='IN_PROGRESS'){
-                        //     hideButton('progressing');
-                        // }
-                        //
-                        // if(status=='COMPLETED'){
-                        //     hideButton('progressing');
-                        //     hideButton('complete');
-                        // }
+                        var order = ordersFetched[i];
+                        order["status"] == "OPEN" ? ordersOpen.push(order) : ordersInProgress.push(order);
+                        console.log('i', ordersFetched[i]);
                     }
+
+                    appedToHtml(ordersOpen, '#openOrders');
+                    appedToHtml(ordersInProgress, '#in-progress');
                 }
             });
+
+        }
+
+
+        function appedToHtml(data, sectionId) {
+            console.log("data in appentToHtml", data);
+
+            for (var i in data) {
+                var status = data[i]["status"];
+                var order = data[i]["orderedItems"];
+                var links = data[i]["_links"];
+                var inProgressUrl = links["in-progress"]['href'];
+                var completeUrl = links["completed"]['href'];
+
+                if(status == 'OPEN'){
+                    $(sectionId).append(
+                        "<li>" + status + " " + order + " " +
+                        // '<button id="progressing" formaction='+inProgressUrl+' onClick="window.location.reload();">In-progress</button>'+ " "+
+                        '<button id="progressing" formaction=' + inProgressUrl + '>In-progress</button>' + " " +
+                        // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
+                        '<button id="complete" formaction=' + completeUrl + '>Complete</button>' +
+                        "</li>");
+                }
+
+                if(status == 'IN_PROGRESS') {
+                    $(sectionId).append(
+                        "<li>" + status + " " + order + " " +
+                        // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
+                        '<button id="complete" formaction=' + completeUrl + '>Complete</button>' +
+                        "</li>");
+                }
+            }
         }
 
         function postOrder() {
@@ -77,7 +104,7 @@
                 $.ajax({
                     type: 'POST',
                     url: 'http://localhost:8080/order/',
-                    // async: true,
+                    async: true,
                     data: JSON.stringify(toDB),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json"
@@ -87,7 +114,7 @@
 
 
         function changeStatus() {
-            $('#openOrders').click(function (event) {
+            $('#openOrders,#in-progress').click(function (event) {
                 var element = $(event.target.nodeName);
                 var tag = event.target.tagName;
                 var id = event.target.id;
@@ -99,18 +126,15 @@
                     $.ajax({
                         type: 'PUT',
                         url: link,
+                        async: true,
                         data: "",
                         contentType: "application/json; charset=utf-8"
                     });
-                    $(event.target).hide();
+                    // $(event.target).hide();
+                    window.location.reload();
                 }
             });
         }
-
-        // function hideButton(id) {
-        //     $('#'+id).hide();
-        // }
-
     });
 
 

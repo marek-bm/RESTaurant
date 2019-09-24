@@ -35,7 +35,7 @@ public class OrderController {
         return resourceAssembler.toResource(order);
     }
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public Resources<Resource<Order>> findAll(){
         List<Order> orders=ordersRepository.findAll();
 
@@ -46,6 +46,30 @@ public class OrderController {
         return new Resources<Resource<Order>>(resources,
                 linkTo(methodOn(OrderController.class).findAll()).withSelfRel());
     }
+
+    @GetMapping ("/")
+    public Resources<Resource<Order>> findAllNotCompleted(){
+        List<Order> orders=ordersRepository.findAllByStatusEqualsOrStatusEquals(OrderStatus.OPEN, OrderStatus.IN_PROGRESS);
+        List resources=orders.stream()
+                .map(x-> resourceAssembler.toResource(x))
+                .collect(Collectors.toList());
+
+        return  new Resources<Resource<Order>>(resources,
+                linkTo(methodOn(OrderController.class).findAllNotCompleted()).withSelfRel());
+    }
+
+    @GetMapping("/ready")
+    public Resources<Resource<Order>> findAllReady(){
+        List<Order> orders=ordersRepository.findAllByStatus(OrderStatus.READY);
+
+        List resources=orders.stream()
+                .map(x->resourceAssembler.toResource(x))
+                .collect(Collectors.toList());
+
+        return new Resources(resources,
+                linkTo(methodOn(OrderController.class).findAllReady()).withSelfRel());
+    }
+
 
     @PostMapping(
             value = "/",
@@ -66,7 +90,7 @@ public class OrderController {
     @PutMapping("/{id}/complete")
     Resource<Order> completeOrder(@PathVariable long id){
         Order order=ordersRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        order.setStatus(OrderStatus.COMPLETED);
+        order.setStatus(OrderStatus.READY);
         ordersRepository.save(order);
         return resourceAssembler.toResource(order);
     }

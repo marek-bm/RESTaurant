@@ -1,6 +1,8 @@
 package com.mj.restaurant.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -17,5 +19,11 @@ public class Order {
 
     public Order() {
         this.status=OrderStatus.OPEN;
+    }
+
+    public Order(String orderedItems) {
+        this.orderedItems = orderedItems;
+        this.status=OrderStatus.OPEN;
+
     }
 }

@@ -1,7 +1,7 @@
 package com.mj.restaurant.model;
 
 public enum OrderStatus {
-    COMPLETED,
+    READY,
     IN_PROGRESS,
     OPEN,
     DELETED;

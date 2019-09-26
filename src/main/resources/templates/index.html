@@ -5,14 +5,17 @@
     <title>RESTaurant</title>
     <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
     <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+<!--    <script src="/webjars/jquery/1.12.1/jquery-ui.js"></script>-->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
 
 <h2>Add a new order</h2>
-<form id="addForm">
-    <p>Name: <input type="text" id="cafeType"></p>
-    <button id="addOrder">Add order</button>
-</form>
+<input type="text" id="cafeType"></p>
+<!--<form id="addForm">-->
+<!--    <p>Name: <input type="text" id="cafeType"></p>-->
+<!--    <button id="addOrder">Add order</button>-->
+<!--</form>-->
 <div id="openOrders">
     <h2>New Orders</h2>
     <ul id="orders"> Coffee Orderss</ul>
@@ -31,11 +34,12 @@
 <script type="application/javascript">
     $(document).ready(function () {
 
-        document.getElementById("addForm").addEventListener('submit', postOrder);
+        // document.getElementById("addForm").addEventListener('submit', postOrder);
         // document.getElementById("orders").addEventListener('click', inProgress);
 
         changeStatus();
         loadAllNotCompletedOrders();
+        autocompleteProduct();
 
         function loadAllNotCompletedOrders() {
 
@@ -134,6 +138,30 @@
                     window.location.reload();
                 }
             });
+        }
+        
+        
+        function autocompleteProduct() {
+
+
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/products/',
+                success: function (data) {
+                    var products=data['_embedded']['productList'];
+                    console.log('products', products);
+                    aa=['latte', 'esspresso'];
+                    $('#cafeType').autocomplete({
+                        source: aa,
+                        minLength: 0,
+                        scroll: true
+                    }).focus(function() {
+                        $(this).autocomplete("search", "");
+                    });
+                }
+            });
+
         }
     });
 

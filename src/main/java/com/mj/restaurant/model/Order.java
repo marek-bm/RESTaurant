@@ -1,8 +1,6 @@
 package com.mj.restaurant.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -15,14 +13,15 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    private String orderedItems;
+    @OneToOne
+    private Product product;
 
     public Order() {
         this.status=OrderStatus.OPEN;
     }
 
-    public Order(String orderedItems) {
-        this.orderedItems = orderedItems;
+    public Order(Product product) {
+        this.product = product;
         this.status=OrderStatus.OPEN;
 
     }

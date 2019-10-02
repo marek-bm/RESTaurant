@@ -97,7 +97,7 @@
 
         changeStatus();
         loadAllNotCompletedOrders();
-        // autocompleteProduct();
+        autocompleteProduct();
 
         function loadAllNotCompletedOrders() {
 
@@ -199,58 +199,58 @@
         }
 
 
-        // function autocompleteProduct() {
-        //     $('tbody').on('click', function (event) {
-        //         var attrId = event.target.id;
-        //         var id = attrId.split('_')[1];
-        //
-        //         $('#product-name_' + id).autocomplete({
-        //             source: function (request, callBack) {
-        //                 $.ajax({
-        //                     type: 'GET',
-        //                     url: 'http://localhost:8080/products/',
-        //                     dataType: 'json',
-        //                     success: function (data) {
-        //                         var products = [{
-        //                             label: 'No matchin values for ' + request.term,
-        //                             value: ''
-        //                         }];
-        //                         console.log('products - before', data);
-        //
-        //                         var fetched = data["_embedded"]["productList"];
-        //                         if (fetched.length) {
-        //                             products = $.map(fetched, function (object) {
-        //                                 return {
-        //                                     label: object.name,
-        //                                     value: object.name,
-        //                                     properties: object
-        //                                 }
-        //                             });
-        //                         }
-        //                         console.log('products -formatted', products);
-        //                         callBack(products);
-        //                     }
-        //                 });
-        //             },
-        //             select: function (event, selectetData) {
-        //                 console.log('selected data ', selectetData);
-        //
-        //                 if (selectetData && selectetData.item && selectetData.item.properties) {
-        //                     //product-name
-        //                     var data = selectetData.item.properties;
-        //                     var gross = data.price + (data.price * data.tax);
-        //                     var qty=1;
-        //                     $('#quantity-'+id).val(qty);
-        //                     $('#product-name_'+id).val(data.name);
-        //                     $('#net-price_'+id).val(data.price);
-        //                     $('#tax_'+id).val(data.tax);
-        //                     $('#gross-price_'+id).val(gross);
-        //                     $('#sub-total_'+id).val(qty * gross);
-        //                 }
-        //             }
-        //         });
-        //     });
-        // }
+        function autocompleteProduct() {
+            $('tbody').on('click', function (event) {
+                var attrId = event.target.id;
+                var id = attrId.split('_')[1];
+
+                $('#product-name_' + id).autocomplete({
+                    source: function (request, callBack) {
+                        $.ajax({
+                            type: 'GET',
+                            url: 'http://localhost:8080/products/',
+                            dataType: 'json',
+                            success: function (data) {
+                                var products = [{
+                                    label: 'No matchin values for ' + request.term,
+                                    value: ''
+                                }];
+                                console.log('products - before', data);
+
+                                var fetched = data["_embedded"]["productList"];
+                                if (fetched.length) {
+                                    products = $.map(fetched, function (object) {
+                                        return {
+                                            label: object.name,
+                                            value: object.name,
+                                            properties: object
+                                        }
+                                    });
+                                }
+                                console.log('products -formatted', products);
+                                callBack(products);
+                            }
+                        });
+                    },
+                    select: function (event, selectetData) {
+                        console.log('selected data ', selectetData);
+
+                        if (selectetData && selectetData.item && selectetData.item.properties) {
+                            //product-name
+                            var data = selectetData.item.properties;
+                            var gross = data.price + (data.price * data.tax);
+                            var qty=1;
+                            $('#quantity-'+id).val(qty);
+                            $('#product-name_'+id).val(data.name);
+                            $('#net-price_'+id).val(data.price);
+                            $('#tax_'+id).val(data.tax);
+                            $('#gross-price_'+id).val(gross);
+                            $('#sub-total_'+id).val(qty * gross);
+                        }
+                    }
+                });
+            });
+        }
 
         //price change
         // $('document').on('change keyup blur', ".form-control" ,function () {

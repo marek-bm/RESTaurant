@@ -5,7 +5,7 @@
     <title>RESTaurant</title>
     <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
     <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
-<!--    <script src="/webjars/jquery/1.12.1/jquery-ui.js"></script>-->
+    <!--    <script src="/webjars/jquery/1.12.1/jquery-ui.js"></script>-->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
@@ -16,6 +16,64 @@
 <!--    <p>Name: <input type="text" id="cafeType"></p>-->
 <!--    <button id="addOrder">Add order</button>-->
 <!--</form>-->
+<div class="table-responsive">
+    <table id="autocomplete_table" class="table table-hover autocomplete_table" border="solid">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col" >#</th>
+            <th scope="col">Cafe</th>
+            <th scope="col">Net Price</th>
+            <th scope="col">Tax</th>
+            <th scope="col">Gross Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr id="row_1">
+            <!--            <td id="delete-1" scope="row" class="delete_row"><img src="./minus.svg" alt="&#45;&#45;"></td>-->
+            <th id="delete_1" scope="row" class="delete_row">
+                <button id="del-btn_1" class="btn btn-success">
+                    x
+                </button>
+            </th>
+            <td>
+                <!--                <input type="text" data-type="countryname" name="countryname[]" id="countryname_1" class="form-control autocomplete_txt" autocomplete="off">-->
+                <input type="text" class="form-control" name="product-name" id="product-name_1"
+                       placeholder="Product Name">
+            </td>
+            <td>
+                <!--                <input type="text" data-type="countryno" name="countryno[]" id="countryno_1" class="form-control autocomplete_txt" autocomplete="off">-->
+                <input type="number" class="form-control" name="net-price" id="net-price_1" placeholder="Net price">
+            </td>
+            <td>
+                <!--                <input type="text" data-type="phone_code" name="phone_code[]" id="phone_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
+                <input type="number" class="form-control" name="tax" id="tax_1" placeholder="Tax">
+            </td>
+            <td>
+                <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
+                <input type="number" class="form-control" name="gross-price" id="gross-price_1"
+                       placeholder="Gross price">
+            </td>
+            <td>
+                <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
+                <input type="number" class="form-control" name="quantity" id="quantity_1" placeholder="Quantity">
+            </td>
+            <td>
+                <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
+                <input type="number" class="form-control" name="sub-total" id="sub-total_1" placeholder="Total">
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="btn-container">
+    <button class="btn btn-success" id="addNew">
+        Add New
+    </button>
+</div>
+
 <div id="openOrders">
     <h2>New Orders</h2>
     <ul id="orders"> Coffee Orderss</ul>
@@ -39,7 +97,7 @@
 
         changeStatus();
         loadAllNotCompletedOrders();
-        autocompleteProduct();
+        // autocompleteProduct();
 
         function loadAllNotCompletedOrders() {
 
@@ -68,7 +126,7 @@
 
 
         function appedToHtml(data, sectionId) {
-            console.log("data in appentToHtml", data);
+            // console.log("data in appentToHtml", data);
 
             for (var i in data) {
                 var status = data[i]["status"];
@@ -77,7 +135,7 @@
                 var inProgressUrl = links["in-progress"]['href'];
                 var completeUrl = links["completed"]['href'];
 
-                if(status == 'OPEN'){
+                if (status == 'OPEN') {
                     $(sectionId).append(
                         "<li>" + status + " " + order + " " +
                         // '<button id="progressing" formaction='+inProgressUrl+' onClick="window.location.reload();">In-progress</button>'+ " "+
@@ -87,7 +145,7 @@
                         "</li>");
                 }
 
-                if(status == 'IN_PROGRESS') {
+                if (status == 'IN_PROGRESS') {
                     $(sectionId).append(
                         "<li>" + status + " " + order + " " +
                         // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
@@ -139,30 +197,98 @@
                 }
             });
         }
-        
-        
-        function autocompleteProduct() {
 
 
+        // function autocompleteProduct() {
+        //     $('tbody').on('click', function (event) {
+        //         var attrId = event.target.id;
+        //         var id = attrId.split('_')[1];
+        //
+        //         $('#product-name_' + id).autocomplete({
+        //             source: function (request, callBack) {
+        //                 $.ajax({
+        //                     type: 'GET',
+        //                     url: 'http://localhost:8080/products/',
+        //                     dataType: 'json',
+        //                     success: function (data) {
+        //                         var products = [{
+        //                             label: 'No matchin values for ' + request.term,
+        //                             value: ''
+        //                         }];
+        //                         console.log('products - before', data);
+        //
+        //                         var fetched = data["_embedded"]["productList"];
+        //                         if (fetched.length) {
+        //                             products = $.map(fetched, function (object) {
+        //                                 return {
+        //                                     label: object.name,
+        //                                     value: object.name,
+        //                                     properties: object
+        //                                 }
+        //                             });
+        //                         }
+        //                         console.log('products -formatted', products);
+        //                         callBack(products);
+        //                     }
+        //                 });
+        //             },
+        //             select: function (event, selectetData) {
+        //                 console.log('selected data ', selectetData);
+        //
+        //                 if (selectetData && selectetData.item && selectetData.item.properties) {
+        //                     //product-name
+        //                     var data = selectetData.item.properties;
+        //                     var gross = data.price + (data.price * data.tax);
+        //                     var qty=1;
+        //                     $('#quantity-'+id).val(qty);
+        //                     $('#product-name_'+id).val(data.name);
+        //                     $('#net-price_'+id).val(data.price);
+        //                     $('#tax_'+id).val(data.tax);
+        //                     $('#gross-price_'+id).val(gross);
+        //                     $('#sub-total_'+id).val(qty * gross);
+        //                 }
+        //             }
+        //         });
+        //     });
+        // }
 
-            $.ajax({
-                type: 'GET',
-                url: 'http://localhost:8080/products/',
-                success: function (data) {
-                    var products=data['_embedded']['productList'];
-                    console.log('products', products);
-                    aa=['latte', 'esspresso'];
-                    $('#cafeType').autocomplete({
-                        source: aa,
-                        minLength: 0,
-                        scroll: true
-                    }).focus(function() {
-                        $(this).autocomplete("search", "");
-                    });
-                }
-            });
+        //price change
+        // $('document').on('change keyup blur', ".form-control" ,function () {
+        //     var id_attr=$(this).attr('id');
+        //     console.log('id_attr', id_attr);
+        //     var id=id_attr.split('_')[1];
+        //     var quantity=parseFloat($('#quantity_'+id).val());
+        //     var price=parseFloat($('#gross-price_'+id).val());
+        //     $('#sub-total_'+id).val((quantity*price).toFixed(2));
+        // });
 
-        }
+        //add row to the table
+        var i = $('#autocomplete_table tr').length;
+        $('#addNew').on('click', function () {
+            var html = '<tr id="row_' + i + '">';
+            // html += '<td id="delete_"+ i + scope="row" class="delete_row"><img src="./minus.svg" alt="---"></td>';
+            html += '<th id="delete_' + i + '" scope="row" class="delete_row"><button id="del-btn_' + i + '" class="btn btn-success" > x </button></th>';
+            html += '<td><input type="text" class="form-control" name="product-name" id="product-name_' + i + '" placeholder="Product Name"></td>';
+            html += '<td><input type="number" class="form-control" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
+            html += '<td><input type="number" class="form-control" name="tax" id="tax_' + i + '" placeholder="Tax"></td>'
+            html += '<td><input type="number" class="form-control" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
+            html += '<td><input type="number" class="form-control" name="quantity" id="quantity_' + i + '" placeholder="Quantity"></td> ';
+            html += '<td><input type="number" class="form-control" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
+            html += '</tr>';
+            $('#autocomplete_table').append(html);
+            i++;
+        });
+
+        //remove table row
+        $('table').click(function (event) {
+            var node=event.target.nodeName;
+            if( node=='BUTTON'){
+                var id=event.target.id;
+                $('#' + id).parents('tr').remove();
+            }
+        });
+
+
     });
 
 

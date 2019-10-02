@@ -60,6 +60,7 @@
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
                 <input type="number" class="form-control" name="quantity" id="quantity_1" placeholder="Quantity">
             </td>
+
             <td>
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
                 <input type="number" class="form-control" name="sub-total" id="sub-total_1" placeholder="Total">
@@ -100,7 +101,6 @@
         autocompleteProduct();
 
         function loadAllNotCompletedOrders() {
-
             $.ajax({
                 type: 'GET',
                 url: 'http://localhost:8080/order/',
@@ -116,12 +116,10 @@
                         order["status"] == "OPEN" ? ordersOpen.push(order) : ordersInProgress.push(order);
                         console.log('i', ordersFetched[i]);
                     }
-
                     appedToHtml(ordersOpen, '#openOrders');
                     appedToHtml(ordersInProgress, '#in-progress');
                 }
             });
-
         }
 
 
@@ -240,7 +238,7 @@
                             var data = selectetData.item.properties;
                             var gross = data.price + (data.price * data.tax);
                             var qty=1;
-                            $('#quantity-'+id).val(qty);
+                            $('#quantity_'+id).val(qty);
                             $('#product-name_'+id).val(data.name);
                             $('#net-price_'+id).val(data.price);
                             $('#tax_'+id).val(data.tax);
@@ -253,14 +251,15 @@
         }
 
         //price change
-        // $('document').on('change keyup blur', ".form-control" ,function () {
-        //     var id_attr=$(this).attr('id');
-        //     console.log('id_attr', id_attr);
-        //     var id=id_attr.split('_')[1];
-        //     var quantity=parseFloat($('#quantity_'+id).val());
-        //     var price=parseFloat($('#gross-price_'+id).val());
-        //     $('#sub-total_'+id).val((quantity*price).toFixed(2));
-        // });
+        $('table').on('change keyup blur', ".form-control" ,function () {
+            var id_attr=$(this).attr('id');
+            console.log('id_attr', id_attr);
+            var id=id_attr.split('_')[1];
+            var quantity=parseFloat($('#quantity_'+id).val());
+            var price=parseFloat($('#gross-price_'+id).val());
+            $('#sub-total_'+id).val((quantity*price).toFixed(2));
+        });
+
 
         //add row to the table
         var i = $('#autocomplete_table tr').length;
@@ -272,7 +271,7 @@
             html += '<td><input type="number" class="form-control" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
             html += '<td><input type="number" class="form-control" name="tax" id="tax_' + i + '" placeholder="Tax"></td>'
             html += '<td><input type="number" class="form-control" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
-            html += '<td><input type="number" class="form-control" name="quantity" id="quantity_' + i + '" placeholder="Quantity"></td> ';
+            html += '<td><input type="number" class="form-control" name="quantity" id="quantity_' + i + '" placeholder="Quantity" ></td> ';
             html += '<td><input type="number" class="form-control" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
             html += '</tr>';
             $('#autocomplete_table').append(html);
@@ -287,7 +286,6 @@
                 $('#' + id).parents('tr').remove();
             }
         });
-
 
     });
 

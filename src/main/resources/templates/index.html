@@ -58,12 +58,12 @@
             </td>
             <td>
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control" name="quantity" id="quantity_1" placeholder="Quantity">
+                <input type="number" class="form-control" name="quantity" id="quantity_1" min="1" placeholder="Quantity">
             </td>
 
             <td>
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control" name="sub-total" id="sub-total_1" placeholder="Total">
+                <input type="number" class="form-control totalLine" name="sub-total" id="sub-total_1" placeholder="Total">
 
         </tr>
         </tbody>
@@ -74,7 +74,10 @@
         Add New
     </button>
 </div>
-
+<div class="input-group">
+    <div class="input-group-addon">$</div>
+    <input type="number" class="form-control" id="totalSum" placeholder="Total">
+</div>
 <div id="openOrders">
     <h2>New Orders</h2>
     <ul id="orders"> Coffee Orderss</ul>
@@ -244,6 +247,7 @@
                             $('#tax_'+id).val(data.tax);
                             $('#gross-price_'+id).val(gross);
                             $('#sub-total_'+id).val(qty * gross);
+                            calculateTotal();
                         }
                     }
                 });
@@ -258,6 +262,7 @@
             var quantity=parseFloat($('#quantity_'+id).val());
             var price=parseFloat($('#gross-price_'+id).val());
             $('#sub-total_'+id).val((quantity*price).toFixed(2));
+            calculateTotal();
         });
 
 
@@ -271,8 +276,8 @@
             html += '<td><input type="number" class="form-control" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
             html += '<td><input type="number" class="form-control" name="tax" id="tax_' + i + '" placeholder="Tax"></td>'
             html += '<td><input type="number" class="form-control" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
-            html += '<td><input type="number" class="form-control" name="quantity" id="quantity_' + i + '" placeholder="Quantity" ></td> ';
-            html += '<td><input type="number" class="form-control" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
+            html += '<td><input type="number" class="form-control" name="quantity" id="quantity_' + i + '" min="1" placeholder="Quantity" ></td> ';
+            html += '<td><input type="number" class="form-control totalLine" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
             html += '</tr>';
             $('#autocomplete_table').append(html);
             i++;
@@ -284,9 +289,17 @@
             if( node=='BUTTON'){
                 var id=event.target.id;
                 $('#' + id).parents('tr').remove();
+                calculateTotal();
             }
         });
 
+        function calculateTotal() {
+            var total=0;
+            $('.totalLine').each(function () {
+                total+= parseFloat($(this).val());
+            });
+            $('#totalSum').val(total);
+        }
     });
 
 

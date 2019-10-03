@@ -39,31 +39,29 @@
                 </button>
             </th>
             <td>
-                <!--                <input type="text" data-type="countryname" name="countryname[]" id="countryname_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="text" class="form-control" name="product-name" id="product-name_1"
+                <input type="text" class="form-control product-name" name="product-name" id="product-name_1"
                        placeholder="Product Name">
             </td>
             <td>
-                <!--                <input type="text" data-type="countryno" name="countryno[]" id="countryno_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control" name="net-price" id="net-price_1" placeholder="Net price">
+                <input type="number" class="form-control net-price" name="net-price" id="net-price_1" placeholder="Net price">
             </td>
             <td>
                 <!--                <input type="text" data-type="phone_code" name="phone_code[]" id="phone_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control" name="tax" id="tax_1" placeholder="Tax">
+                <input type="number" class="form-control tax" name="tax" id="tax_1" placeholder="Tax">
             </td>
             <td>
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control" name="gross-price" id="gross-price_1"
+                <input type="number" class="form-control gross-price" name="gross-price" id="gross-price_1"
                        placeholder="Gross price">
             </td>
             <td>
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control" name="quantity" id="quantity_1" min="1" placeholder="Quantity">
+                <input type="number" class="form-control quantity" name="quantity" id="quantity_1" min="1" placeholder="Quantity">
             </td>
 
             <td>
                 <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
-                <input type="number" class="form-control totalLine" name="sub-total" id="sub-total_1" placeholder="Total">
+                <input type="number" class="form-control sub-total" name="sub-total" id="sub-total_1" placeholder="Total">
 
         </tr>
         </tbody>
@@ -72,6 +70,9 @@
 <div class="btn-container">
     <button class="btn btn-success" id="addNew">
         Add New
+    </button>
+    <button class="btn btn-success" id="makeOrder">
+        Order
     </button>
 </div>
 <div class="input-group">
@@ -272,12 +273,12 @@
             var html = '<tr id="row_' + i + '">';
             // html += '<td id="delete_"+ i + scope="row" class="delete_row"><img src="./minus.svg" alt="---"></td>';
             html += '<th id="delete_' + i + '" scope="row" class="delete_row"><button id="del-btn_' + i + '" class="btn btn-success" > x </button></th>';
-            html += '<td><input type="text" class="form-control" name="product-name" id="product-name_' + i + '" placeholder="Product Name"></td>';
-            html += '<td><input type="number" class="form-control" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
-            html += '<td><input type="number" class="form-control" name="tax" id="tax_' + i + '" placeholder="Tax"></td>'
-            html += '<td><input type="number" class="form-control" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
-            html += '<td><input type="number" class="form-control" name="quantity" id="quantity_' + i + '" min="1" placeholder="Quantity" ></td> ';
-            html += '<td><input type="number" class="form-control totalLine" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
+            html += '<td><input type="text" class="form-control product-name" name="product-name" id="product-name_' + i + '" placeholder="Product Name"></td>';
+            html += '<td><input type="number" class="form-control net-price" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
+            html += '<td><input type="number" class="form-control tax" name="tax" id="tax_' + i + '" placeholder="Tax"></td>'
+            html += '<td><input type="number" class="form-control gross-price" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
+            html += '<td><input type="number" class="form-control quantity" name="quantity" id="quantity_' + i + '" min="1" placeholder="Quantity" ></td> ';
+            html += '<td><input type="number" class="form-control sub-total" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
             html += '</tr>';
             $('#autocomplete_table').append(html);
             i++;
@@ -295,11 +296,39 @@
 
         function calculateTotal() {
             var total=0;
-            $('.totalLine').each(function () {
+            $('.sub-total').each(function () {
                 total+= parseFloat($(this).val());
             });
             $('#totalSum').val(total);
         }
+
+        //make receipt
+        $('#makeOrder').on('click', function () {
+            var table= $('#autocomplete_table');
+            var rows=table.find('tbody tr');
+            var order={
+                items: [],
+                total: $('#totalSum').val()
+            };
+
+            rows.each(function () {
+                var product={
+                    name        : $(this).find('.product-name').val(),
+                    netPrice    : $(this).find('.net-price').val(),
+                    tax         : $(this).find('.tax').val(),
+                    grossPrice  : $(this).find('.gross-price').val()
+                };
+                var quantity=$(this).find('.quantity').val();
+                var subTotal=$(this).find('.sub-total').val();
+
+                var orderItem={};
+                orderItem.product=product;
+                orderItem.quantity=quantity;
+                orderItem.subTotal=subTotal;
+                order.items.push(orderItem);
+            });
+            console.log('order', order);
+        });
     });
 
 

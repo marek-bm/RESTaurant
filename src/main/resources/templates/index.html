@@ -27,6 +27,7 @@
             <th scope="col">Gross Price</th>
             <th scope="col">Quantity</th>
             <th scope="col">Total</th>
+            <th scope="col"> Product Id</th>
         </tr>
         </thead>
 
@@ -46,22 +47,20 @@
                 <input type="number" class="form-control net-price" name="net-price" id="net-price_1" placeholder="Net price">
             </td>
             <td>
-                <!--                <input type="text" data-type="phone_code" name="phone_code[]" id="phone_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
                 <input type="number" class="form-control tax" name="tax" id="tax_1" placeholder="Tax">
             </td>
             <td>
-                <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
                 <input type="number" class="form-control gross-price" name="gross-price" id="gross-price_1"
                        placeholder="Gross price">
             </td>
             <td>
-                <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
                 <input type="number" class="form-control quantity" name="quantity" id="quantity_1" min="1" placeholder="Quantity">
             </td>
 
             <td>
-                <!--                <input type="text" data-type="country_code" name="country_code[]" id="country_code_1" class="form-control autocomplete_txt" autocomplete="off">-->
                 <input type="number" class="form-control sub-total" name="sub-total" id="sub-total_1" placeholder="Total">
+            </td>
+            <td hidden> <input type="text" class="product-id" id="product-id_1" ></td>
 
         </tr>
         </tbody>
@@ -240,14 +239,16 @@
                         if (selectetData && selectetData.item && selectetData.item.properties) {
                             //product-name
                             var data = selectetData.item.properties;
-                            var gross = data.price + (data.price * data.tax);
+                            var gross = data.netPrice * (1 + data.tax);
                             var qty=1;
                             $('#quantity_'+id).val(qty);
                             $('#product-name_'+id).val(data.name);
-                            $('#net-price_'+id).val(data.price);
+                            $('#net-price_'+id).val(data.netPrice);
                             $('#tax_'+id).val(data.tax);
                             $('#gross-price_'+id).val(gross);
                             $('#sub-total_'+id).val(qty * gross);
+                            $('#product-id_'+id).val(data.productId);
+                            console.log('prod id', data.productId);
                             calculateTotal();
                         }
                     }
@@ -275,10 +276,11 @@
             html += '<th id="delete_' + i + '" scope="row" class="delete_row"><button id="del-btn_' + i + '" class="btn btn-success" > x </button></th>';
             html += '<td><input type="text" class="form-control product-name" name="product-name" id="product-name_' + i + '" placeholder="Product Name"></td>';
             html += '<td><input type="number" class="form-control net-price" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
-            html += '<td><input type="number" class="form-control tax" name="tax" id="tax_' + i + '" placeholder="Tax"></td>'
+            html += '<td><input type="number" class="form-control tax" name="tax" id="tax_' + i + '" placeholder="Tax"></td>';
             html += '<td><input type="number" class="form-control gross-price" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
             html += '<td><input type="number" class="form-control quantity" name="quantity" id="quantity_' + i + '" min="1" placeholder="Quantity" ></td> ';
             html += '<td><input type="number" class="form-control sub-total" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
+            html += '<td hidden> <input type="text" id="product-id_'+ i + '" class="product-id"></td>';
             html += '</tr>';
             $('#autocomplete_table').append(html);
             i++;
@@ -313,11 +315,13 @@
 
             rows.each(function () {
                 var product={
+                    productId   : $(this).find('.product-id').val(),
                     name        : $(this).find('.product-name').val(),
                     netPrice    : $(this).find('.net-price').val(),
                     tax         : $(this).find('.tax').val(),
                     grossPrice  : $(this).find('.gross-price').val()
                 };
+
                 var quantity=$(this).find('.quantity').val();
                 var subTotal=$(this).find('.sub-total').val();
 
@@ -328,6 +332,8 @@
                 order.items.push(orderItem);
             });
             console.log('order', order);
+            console.log('order stringify', JSON.stringify(order));
+
         });
     });
 

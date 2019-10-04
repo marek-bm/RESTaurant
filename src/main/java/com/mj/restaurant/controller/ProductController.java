@@ -8,6 +8,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,5 +41,12 @@ public class ProductController {
 
         return new Resources<Resource<Product>>(resources,
                 linkTo(methodOn(ProductController.class).loadAll()).withRel("products"));
+    }
+
+    @GetMapping ("/{id}")
+    public Resource<Product> findbyId(@PathVariable long id){
+        Optional<Product> optional=Optional.ofNullable(productRepository.findById(id)).orElseThrow(NoSuchElementException::new);
+        Product product=optional.get();
+        return resourceAssembler.toResource(product);
     }
 }

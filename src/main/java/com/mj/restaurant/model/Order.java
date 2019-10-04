@@ -3,6 +3,9 @@ package com.mj.restaurant.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -13,16 +16,28 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    @OneToOne
-    private Product product;
+    @OneToMany
+    private List<OrderLine> products;
+    private BigDecimal totalSum;
 
     public Order() {
+        this.products = new ArrayList<>();
         this.status=OrderStatus.OPEN;
+        this.totalSum= new BigDecimal(0.0);
     }
 
-    public Order(Product product) {
-        this.product = product;
-        this.status=OrderStatus.OPEN;
-
+    public void addNextLine(OrderLine item){
+        this.products.add(item);
     }
+
+    public void sumTotal(){
+        BigDecimal total=new BigDecimal(0);
+        for(OrderLine i : this.products){
+            BigDecimal subtotal=i.getSubTotal();
+            total=total.add(subtotal);
+        }
+        this.totalSum=total;
+    }
+
+
 }

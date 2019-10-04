@@ -19,12 +19,14 @@ public class Product {
     @GeneratedValue (strategy = GenerationType.AUTO)
     private Long productId;
     private String name;
-    private BigDecimal price;
+    private BigDecimal netPrice;
+    private BigDecimal grossPrice;
     private double tax;
 
     public Product(String name, BigDecimal price, double tax) {
         this.name=name;
-        this.price=price;
+        this.netPrice=price;
         this.tax=tax;
+        this.grossPrice=price.multiply(BigDecimal.valueOf(1+tax));
     }
 }

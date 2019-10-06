@@ -1,7 +1,9 @@
 package com.mj.restaurant.controller;
 
 import com.mj.restaurant.model.Order;
+import com.mj.restaurant.model.OrderLine;
 import com.mj.restaurant.model.OrderStatus;
+import com.mj.restaurant.repository.OrderLineRepository;
 import com.mj.restaurant.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -22,11 +24,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class OrderController {
     private OrdersRepository ordersRepository;
     private OrderResourceAssembler resourceAssembler;
+    private OrderLineRepository lineRepository;
 
     @Autowired
-    public OrderController(OrdersRepository ordersRepository, OrderResourceAssembler resourceAssembler) {
+    public OrderController(OrdersRepository ordersRepository, OrderResourceAssembler resourceAssembler, OrderLineRepository lineRepository) {
         this.ordersRepository = ordersRepository;
         this.resourceAssembler = resourceAssembler;
+        this.lineRepository = lineRepository;
     }
 
     @GetMapping ("/{id}")
@@ -75,6 +79,8 @@ public class OrderController {
             value = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public Resource <Order> saveOrder(@RequestBody Order order){
+        List<OrderLine> lines=order.getProducts();
+        lineRepository.saveAll(lines);
         ordersRepository.save(order);
         return resourceAssembler.toResource(order);
     }

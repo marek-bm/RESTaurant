@@ -27,7 +27,7 @@
             <th scope="col">Gross Price</th>
             <th scope="col">Quantity</th>
             <th scope="col">Total</th>
-            <th scope="col"> Product Id</th>
+            <th hidden scope="col"> Product Id</th>
         </tr>
         </thead>
 
@@ -156,24 +156,24 @@
             }
         }
 
-        function postOrder() {
-            var order = document.getElementById('cafeType').value;
-            console.log(order);
-            if (order == "") {
-                alert("Order cannot be empty");
-            } else {
-                var toDB = {orderedItems: order};
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'http://localhost:8080/order/',
-                    async: true,
-                    data: JSON.stringify(toDB),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json"
-                });
-            }
-        }
+        // function postOrder() {
+        //     var order = document.getElementById('cafeType').value;
+        //     console.log(order);
+        //     if (order == "") {
+        //         alert("Order cannot be empty");
+        //     } else {
+        //         var toDB = {orderedItems: order};
+        //
+        //         $.ajax({
+        //             type: 'POST',
+        //             url: 'http://localhost:8080/order/',
+        //             async: true,
+        //             data: JSON.stringify(toDB),
+        //             contentType: "application/json; charset=utf-8",
+        //             dataType: "json"
+        //         });
+        //     }
+        // }
 
 
         function changeStatus() {
@@ -309,8 +309,8 @@
             var table= $('#autocomplete_table');
             var rows=table.find('tbody tr');
             var order={
-                items: [],
-                total: $('#totalSum').val()
+                products: [],
+                totalSum: $('#totalSum').val()
             };
 
             rows.each(function () {
@@ -324,16 +324,24 @@
 
                 var quantity=$(this).find('.quantity').val();
                 var subTotal=$(this).find('.sub-total').val();
-
                 var orderItem={};
                 orderItem.product=product;
                 orderItem.quantity=quantity;
                 orderItem.subTotal=subTotal;
-                order.items.push(orderItem);
+                order.products.push(orderItem);
             });
             console.log('order', order);
             console.log('order stringify', JSON.stringify(order));
 
+            $.ajax({
+                type: 'POST',
+                url: 'http://localhost:8080/order/',
+                async: true,
+                data: JSON.stringify(order),
+                // data: order,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
         });
     });
 

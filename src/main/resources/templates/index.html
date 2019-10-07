@@ -31,7 +31,7 @@
             <tbody>
             <tr id="row_1">
                 <th id="delete_1" scope="row" class="delete_row">
-                    <button id="del-btn_1" class="btn btn-danger"> -</button>
+                    <button id="del-btn_1" class="btn btn-danger"> - </button>
                 </th>
                 <td>
                     <input type="text" class="form-control product-name" name="product-name" id="product-name_1"
@@ -59,15 +59,12 @@
                 <td hidden><input type="text" class="product-id" id="product-id_1"></td>
             </tr>
             </tbody>
-            <tfoot>
-            <tr>
-                <td>
-                    <button class="btn btn-success" id="addNew"> +</button>
-                </td
-                >
-            </tr>
-            </tfoot>
         </table>
+
+        <div>
+            <button class="btn btn-success" style="margin-left: 10px" id="addNew">+</button>
+        </div>
+
 
 
         <div class="input-group">
@@ -75,7 +72,6 @@
                 <span class="input-group-text">$</span>
             </div>
             <input type="text" class="form-control" id="totalSum" placeholder="Total">
-
         </div>
 
             <button type="button" class="btn btn-primary btn-block" id="makeOrder">

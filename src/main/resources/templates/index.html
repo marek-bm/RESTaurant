@@ -33,7 +33,6 @@
 
         <tbody>
         <tr id="row_1">
-            <!--            <td id="delete-1" scope="row" class="delete_row"><img src="./minus.svg" alt="&#45;&#45;"></td>-->
             <th id="delete_1" scope="row" class="delete_row">
                 <button id="del-btn_1" class="btn btn-success">
                     x
@@ -56,12 +55,10 @@
             <td>
                 <input type="number" class="form-control quantity" name="quantity" id="quantity_1" min="1" placeholder="Quantity">
             </td>
-
             <td>
                 <input type="number" class="form-control sub-total" name="sub-total" id="sub-total_1" placeholder="Total">
             </td>
             <td hidden> <input type="text" class="product-id" id="product-id_1" ></td>
-
         </tr>
         </tbody>
     </table>
@@ -96,9 +93,6 @@
 <script type="application/javascript">
     $(document).ready(function () {
 
-        // document.getElementById("addForm").addEventListener('submit', postOrder);
-        // document.getElementById("orders").addEventListener('click', inProgress);
-
         changeStatus();
         loadAllNotCompletedOrders();
         autocompleteProduct();
@@ -131,50 +125,35 @@
 
             for (var i in data) {
                 var status = data[i]["status"];
-                var order = data[i]["orderedItems"];
+                var products = data[i]["products"];
                 var links = data[i]["_links"];
+                var totalSum = data[i]["totalSum"];
                 var inProgressUrl = links["in-progress"]['href'];
                 var completeUrl = links["completed"]['href'];
+                // console.log('order', products);
 
                 if (status == 'OPEN') {
-                    $(sectionId).append(
-                        "<li>" + status + " " + order + " " +
-                        // '<button id="progressing" formaction='+inProgressUrl+' onClick="window.location.reload();">In-progress</button>'+ " "+
-                        '<button id="progressing" formaction=' + inProgressUrl + '>In-progress</button>' + " " +
-                        // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
-                        '<button id="complete" formaction=' + completeUrl + '>Complete</button>' +
-                        "</li>");
+                    var html='<li>' + status + ' id: '+ data[i].id +' Total: ' + totalSum ;
+                    for (var i in products){
+                        html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
+                    }
+                    html += '</li>';
+                    html += '<button id="progressing" formaction=' + inProgressUrl + '>In-progress</button> ';
+                    html +=  '<button id="complete" formaction=' + completeUrl + '>Complete</button>';
+                    $(sectionId).append(html);
                 }
 
                 if (status == 'IN_PROGRESS') {
-                    $(sectionId).append(
-                        "<li>" + status + " " + order + " " +
-                        // '<button id="complete" formaction='+completeUrl+' onClick="window.location.reload();">Complete</button>'+
-                        '<button id="complete" formaction=' + completeUrl + '>Complete</button>' +
-                        "</li>");
+                    var html='<li>' + status + ' id: '+ data[i].id +' Total: ' + totalSum ;
+                    for (var i in products){
+                        html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
+                    }
+                    html += '</li>';
+                    html +=  '<button id="complete" formaction=' + completeUrl + '>Complete</button>';
+                    $(sectionId).append(html);
                 }
             }
         }
-
-        // function postOrder() {
-        //     var order = document.getElementById('cafeType').value;
-        //     console.log(order);
-        //     if (order == "") {
-        //         alert("Order cannot be empty");
-        //     } else {
-        //         var toDB = {orderedItems: order};
-        //
-        //         $.ajax({
-        //             type: 'POST',
-        //             url: 'http://localhost:8080/order/',
-        //             async: true,
-        //             data: JSON.stringify(toDB),
-        //             contentType: "application/json; charset=utf-8",
-        //             dataType: "json"
-        //         });
-        //     }
-        // }
-
 
         function changeStatus() {
             $('#openOrders,#in-progress').click(function (event) {
@@ -193,7 +172,6 @@
                         data: "",
                         contentType: "application/json; charset=utf-8"
                     });
-                    // $(event.target).hide();
                     window.location.reload();
                 }
             });
@@ -233,6 +211,7 @@
                             }
                         });
                     },
+                    minLength: 2,
                     select: function (event, selectetData) {
                         console.log('selected data ', selectetData);
 
@@ -342,6 +321,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json"
             });
+            window.location.reload();
         });
     });
 

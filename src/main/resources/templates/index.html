@@ -3,92 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <title>RESTaurant</title>
-    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
     <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
-    <!--    <script src="/webjars/jquery/1.12.1/jquery-ui.js"></script>-->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.1.3/css/bootstrap.min.css"/>
 </head>
 <body>
 
-<h2>Add a new order</h2>
-<input type="text" id="cafeType"></p>
-<!--<form id="addForm">-->
-<!--    <p>Name: <input type="text" id="cafeType"></p>-->
-<!--    <button id="addOrder">Add order</button>-->
-<!--</form>-->
-<div class="table-responsive">
-    <table id="autocomplete_table" class="table table-hover autocomplete_table" border="solid">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col" >#</th>
-            <th scope="col">Cafe</th>
-            <th scope="col">Net Price</th>
-            <th scope="col">Tax</th>
-            <th scope="col">Gross Price</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total</th>
-            <th hidden scope="col"> Product Id</th>
-        </tr>
-        </thead>
+<div class="container">
+    <h2>Add a new order</h2>
 
-        <tbody>
-        <tr id="row_1">
-            <th id="delete_1" scope="row" class="delete_row">
-                <button id="del-btn_1" class="btn btn-success">
-                    x
-                </button>
-            </th>
-            <td>
-                <input type="text" class="form-control product-name" name="product-name" id="product-name_1"
-                       placeholder="Product Name">
-            </td>
-            <td>
-                <input type="number" class="form-control net-price" name="net-price" id="net-price_1" placeholder="Net price">
-            </td>
-            <td>
-                <input type="number" class="form-control tax" name="tax" id="tax_1" placeholder="Tax">
-            </td>
-            <td>
-                <input type="number" class="form-control gross-price" name="gross-price" id="gross-price_1"
-                       placeholder="Gross price">
-            </td>
-            <td>
-                <input type="number" class="form-control quantity" name="quantity" id="quantity_1" min="1" placeholder="Quantity">
-            </td>
-            <td>
-                <input type="number" class="form-control sub-total" name="sub-total" id="sub-total_1" placeholder="Total">
-            </td>
-            <td hidden> <input type="text" class="product-id" id="product-id_1" ></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<div class="btn-container">
-    <button class="btn btn-success" id="addNew">
-        Add New
-    </button>
-    <button class="btn btn-success" id="makeOrder">
-        Order
-    </button>
-</div>
-<div class="input-group">
-    <div class="input-group-addon">$</div>
-    <input type="number" class="form-control" id="totalSum" placeholder="Total">
-</div>
-<div id="openOrders">
-    <h2>New Orders</h2>
-    <ul id="orders"> Coffee Orderss</ul>
-</div>
+    <div class="row">
+        <table id="autocomplete_table" class="table table-hover autocomplete_table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Cafe</th>
+                <th scope="col">Net Price</th>
+                <th scope="col">Tax</th>
+                <th scope="col">Gross Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+                <th hidden scope="col"> Product Id</th>
+            </tr>
+            </thead>
 
-<div id="in-progress">
-    <h2>Orders In-Progress</h2>
-    <ul> Coffee Orderss</ul>
+            <tbody>
+            <tr id="row_1">
+                <th id="delete_1" scope="row" class="delete_row">
+                    <button id="del-btn_1" class="btn btn-danger"> -</button>
+                </th>
+                <td>
+                    <input type="text" class="form-control product-name" name="product-name" id="product-name_1"
+                           placeholder="Product Name">
+                </td>
+                <td>
+                    <input type="number" class="form-control net-price" name="net-price" id="net-price_1"
+                           placeholder="Net price">
+                </td>
+                <td>
+                    <input type="number" class="form-control tax" name="tax" id="tax_1" placeholder="Tax">
+                </td>
+                <td>
+                    <input type="number" class="form-control gross-price" name="gross-price" id="gross-price_1"
+                           placeholder="Gross price">
+                </td>
+                <td>
+                    <input type="number" class="form-control quantity" name="quantity" id="quantity_1" min="1"
+                           placeholder="Quantity">
+                </td>
+                <td>
+                    <input type="number" class="form-control sub-total" name="sub-total" id="sub-total_1"
+                           placeholder="Total">
+                </td>
+                <td hidden><input type="text" class="product-id" id="product-id_1"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>
+                    <button class="btn btn-success" id="addNew"> +</button>
+                </td
+                >
+            </tr>
+            </tfoot>
+        </table>
+
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+            </div>
+            <input type="text" class="form-control" id="totalSum" placeholder="Total">
+
+        </div>
+
+            <button type="button" class="btn btn-primary btn-block" id="makeOrder">
+                Finalize Order
+            </button>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm" id="openOrders">
+                <h2>New Orders</h2>
+                <ul id="orders"> Coffee Orderss</ul>
+            </div>
+            <div class="col-sm" id="in-progress">
+                <h2>Orders In-Progress</h2>
+                <ul> Coffee Orderss</ul>
+            </div>
+            <div class="col-sm" id="comleted">
+                <h2>Ready to go</h2>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div id="comleted">
-
-</div>
-
 
 <script type="application/javascript">
     $(document).ready(function () {
@@ -133,23 +143,35 @@
                 // console.log('order', products);
 
                 if (status == 'OPEN') {
-                    var html='<li>' + status + ' id: '+ data[i].id +' Total: ' + totalSum ;
-                    for (var i in products){
-                        html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
-                    }
-                    html += '</li>';
-                    html += '<button id="progressing" formaction=' + inProgressUrl + '>In-progress</button> ';
-                    html +=  '<button id="complete" formaction=' + completeUrl + '>Complete</button>';
+                    var header = status + ' id: ' + data[i].id + ' Total: ' + totalSum;
+                    var html = '<div class="card">'
+                    html += '<div class="card-header bg-warning"> ' + header + '</div>';
+                    html += '<div class="card-body bg-light">';
+                    for (var i in products) {
+                            html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
+                        }
+                    html += '</div>'; // closed body
+                    html += '<div class="card-footer bg-warning">';
+                    html += '<button id="progressing" formaction=' + inProgressUrl + '>Start processing</button> ';
+                    html += '</div>'; //closed footer
+                    html += '</div>'; //closed panel
                     $(sectionId).append(html);
+
                 }
 
                 if (status == 'IN_PROGRESS') {
-                    var html='<li>' + status + ' id: '+ data[i].id +' Total: ' + totalSum ;
-                    for (var i in products){
+                    var header = status + ' id: ' + data[i].id + ' Total: ' + totalSum;
+                    var html = '<div class="card">'
+                    html += '<div class="card-header bg-dark text-white"> ' + header + '</div>';
+                    html += '<div class="card-body bg-light">';
+                    for (var i in products) {
                         html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
                     }
-                    html += '</li>';
-                    html +=  '<button id="complete" formaction=' + completeUrl + '>Complete</button>';
+                    html += '</div>'; // closed body
+                    html += '<div class="card-footer bg-dark">';
+                    html += '<button id="complete" formaction=' + completeUrl + '>Completed</button>';
+                    html += '</div>'; //closed footer
+                    html += '</div>'; //closed panel
                     $(sectionId).append(html);
                 }
             }
@@ -219,14 +241,14 @@
                             //product-name
                             var data = selectetData.item.properties;
                             var gross = data.netPrice * (1 + data.tax);
-                            var qty=1;
-                            $('#quantity_'+id).val(qty);
-                            $('#product-name_'+id).val(data.name);
-                            $('#net-price_'+id).val(data.netPrice);
-                            $('#tax_'+id).val(data.tax);
-                            $('#gross-price_'+id).val(gross);
-                            $('#sub-total_'+id).val(qty * gross);
-                            $('#product-id_'+id).val(data.productId);
+                            var qty = 1;
+                            $('#quantity_' + id).val(qty);
+                            $('#product-name_' + id).val(data.name);
+                            $('#net-price_' + id).val(data.netPrice);
+                            $('#tax_' + id).val(data.tax);
+                            $('#gross-price_' + id).val(gross);
+                            $('#sub-total_' + id).val(qty * gross);
+                            $('#product-id_' + id).val(data.productId);
                             console.log('prod id', data.productId);
                             calculateTotal();
                         }
@@ -236,13 +258,13 @@
         }
 
         //price change
-        $('table').on('change keyup blur', ".form-control" ,function () {
-            var id_attr=$(this).attr('id');
+        $('table').on('change keyup blur', ".form-control", function () {
+            var id_attr = $(this).attr('id');
             console.log('id_attr', id_attr);
-            var id=id_attr.split('_')[1];
-            var quantity=parseFloat($('#quantity_'+id).val());
-            var price=parseFloat($('#gross-price_'+id).val());
-            $('#sub-total_'+id).val((quantity*price).toFixed(2));
+            var id = id_attr.split('_')[1];
+            var quantity = parseFloat($('#quantity_' + id).val());
+            var price = parseFloat($('#gross-price_' + id).val());
+            $('#sub-total_' + id).val((quantity * price).toFixed(2));
             calculateTotal();
         });
 
@@ -252,14 +274,14 @@
         $('#addNew').on('click', function () {
             var html = '<tr id="row_' + i + '">';
             // html += '<td id="delete_"+ i + scope="row" class="delete_row"><img src="./minus.svg" alt="---"></td>';
-            html += '<th id="delete_' + i + '" scope="row" class="delete_row"><button id="del-btn_' + i + '" class="btn btn-success" > x </button></th>';
+            html += '<th id="delete_' + i + '" scope="row" class="delete_row"><button id="del-btn_' + i + '" class="btn btn-danger" > - </button></th>';
             html += '<td><input type="text" class="form-control product-name" name="product-name" id="product-name_' + i + '" placeholder="Product Name"></td>';
             html += '<td><input type="number" class="form-control net-price" name="net-price" id="net-price_' + i + '" placeholder="Net price"></td>';
             html += '<td><input type="number" class="form-control tax" name="tax" id="tax_' + i + '" placeholder="Tax"></td>';
             html += '<td><input type="number" class="form-control gross-price" name="gross-price" id="gross-price_' + i + '" placeholder="Gross price"></td>';
             html += '<td><input type="number" class="form-control quantity" name="quantity" id="quantity_' + i + '" min="1" placeholder="Quantity" ></td> ';
             html += '<td><input type="number" class="form-control sub-total" name="sub-total" id="sub-total_' + i + '" placeholder="Total"></td>';
-            html += '<td hidden> <input type="text" id="product-id_'+ i + '" class="product-id"></td>';
+            html += '<td hidden> <input type="text" id="product-id_' + i + '" class="product-id"></td>';
             html += '</tr>';
             $('#autocomplete_table').append(html);
             i++;
@@ -267,46 +289,46 @@
 
         //remove table row
         $('table').click(function (event) {
-            var node=event.target.nodeName;
-            if( node=='BUTTON'){
-                var id=event.target.id;
+            var node = event.target.nodeName;
+            if (node == 'BUTTON') {
+                var id = event.target.id;
                 $('#' + id).parents('tr').remove();
                 calculateTotal();
             }
         });
 
         function calculateTotal() {
-            var total=0;
+            var total = 0;
             $('.sub-total').each(function () {
-                total+= parseFloat($(this).val());
+                total += parseFloat($(this).val());
             });
             $('#totalSum').val(total);
         }
 
         //make receipt
         $('#makeOrder').on('click', function () {
-            var table= $('#autocomplete_table');
-            var rows=table.find('tbody tr');
-            var order={
+            var table = $('#autocomplete_table');
+            var rows = table.find('tbody tr');
+            var order = {
                 products: [],
                 totalSum: $('#totalSum').val()
             };
 
             rows.each(function () {
-                var product={
-                    productId   : $(this).find('.product-id').val(),
-                    name        : $(this).find('.product-name').val(),
-                    netPrice    : $(this).find('.net-price').val(),
-                    tax         : $(this).find('.tax').val(),
-                    grossPrice  : $(this).find('.gross-price').val()
+                var product = {
+                    productId: $(this).find('.product-id').val(),
+                    name: $(this).find('.product-name').val(),
+                    netPrice: $(this).find('.net-price').val(),
+                    tax: $(this).find('.tax').val(),
+                    grossPrice: $(this).find('.gross-price').val()
                 };
 
-                var quantity=$(this).find('.quantity').val();
-                var subTotal=$(this).find('.sub-total').val();
-                var orderItem={};
-                orderItem.product=product;
-                orderItem.quantity=quantity;
-                orderItem.subTotal=subTotal;
+                var quantity = $(this).find('.quantity').val();
+                var subTotal = $(this).find('.sub-total').val();
+                var orderItem = {};
+                orderItem.product = product;
+                orderItem.quantity = quantity;
+                orderItem.subTotal = subTotal;
                 order.products.push(orderItem);
             });
             console.log('order', order);

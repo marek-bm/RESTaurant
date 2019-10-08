@@ -22,7 +22,7 @@ public class OrderResourceAssembler implements ResourceAssembler<Order, Resource
             return new Resource(order,
                     linkTo(methodOn(OrderController.class).findOrder(order.getId())).withSelfRel(),
                     linkTo(methodOn(OrderController.class).updateOrder(order.getId())).withRel("in-progress"),
-                    linkTo(methodOn(OrderController.class).completeOrder(order.getId())).withRel("completed"),
+                    linkTo(methodOn(OrderController.class).completeOrder(order.getId())).withRel("ready"),
                     linkTo(methodOn(OrderController.class).findAll()).withRel("orders"));
 //        }
     }

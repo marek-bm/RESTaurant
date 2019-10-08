@@ -65,8 +65,6 @@
             <button class="btn btn-success" style="margin-left: 10px" id="addNew">+</button>
         </div>
 
-
-
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
@@ -83,13 +81,13 @@
         <div class="row">
             <div class="col-sm" id="openOrders">
                 <h2>New Orders</h2>
-                <ul id="orders"> Coffee Orderss</ul>
             </div>
+
             <div class="col-sm" id="in-progress">
                 <h2>Orders In-Progress</h2>
-                <ul> Coffee Orderss</ul>
             </div>
-            <div class="col-sm" id="comleted">
+
+            <div class="col-sm" id="ready-to-go">
                 <h2>Ready to go</h2>
             </div>
         </div>
@@ -102,6 +100,7 @@
         changeStatus();
         loadAllNotCompletedOrders();
         autocompleteProduct();
+        loadReadyOrders();
 
         function loadAllNotCompletedOrders() {
             $.ajax({
@@ -125,29 +124,43 @@
             });
         }
 
+        function loadReadyOrders() {
+            $.ajax({
+                type : 'GET',
+                url  : 'http://localhost:8080/order/ready',
+                async: true,
+                success: function (data) {
+                    console.log('ready order', data);
+                    var ordersReady = data["_embedded"]["orderList"];
+                    console.log('orders ready', ordersReady);
+                    appedToHtml(ordersReady,'#ready-to-go');
+                }
+            });
+        }
 
         function appedToHtml(data, sectionId) {
             // console.log("data in appentToHtml", data);
-
             for (var i in data) {
                 var status = data[i]["status"];
                 var products = data[i]["products"];
                 var links = data[i]["_links"];
                 var totalSum = data[i]["totalSum"];
                 var inProgressUrl = links["in-progress"]['href'];
-                var completeUrl = links["completed"]['href'];
-                // console.log('order', products);
+                var readyUrl = links["ready"]['href'];
+                var deliveredUrl = links["delivered"]['href'];
+                console.log('order', products);
+                console.log('delivered url', deliveredUrl);
 
                 if (status == 'OPEN') {
                     var header = status + ' id: ' + data[i].id + ' Total: ' + totalSum;
                     var html = '<div class="card">'
-                    html += '<div class="card-header bg-warning"> ' + header + '</div>';
+                    html += '<div class="card-header bg-danger text-white"> ' + header + '</div>';
                     html += '<div class="card-body bg-light">';
                     for (var i in products) {
                             html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
                         }
                     html += '</div>'; // closed body
-                    html += '<div class="card-footer bg-warning">';
+                    html += '<div class="card-footer bg-danger text-white">';
                     html += '<button id="progressing" formaction=' + inProgressUrl + '>Start processing</button> ';
                     html += '</div>'; //closed footer
                     html += '</div>'; //closed panel
@@ -158,14 +171,30 @@
                 if (status == 'IN_PROGRESS') {
                     var header = status + ' id: ' + data[i].id + ' Total: ' + totalSum;
                     var html = '<div class="card">'
-                    html += '<div class="card-header bg-dark text-white"> ' + header + '</div>';
+                    html += '<div class="card-header bg-warning text-white"> ' + header + '</div>';
                     html += '<div class="card-body bg-light">';
                     for (var i in products) {
                         html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
                     }
                     html += '</div>'; // closed body
-                    html += '<div class="card-footer bg-dark">';
-                    html += '<button id="complete" formaction=' + completeUrl + '>Completed</button>';
+                    html += '<div class="card-footer bg-warning text-white">';
+                    html += '<button id="complete" formaction=' + readyUrl + '>Completed</button>';
+                    html += '</div>'; //closed footer
+                    html += '</div>'; //closed panel
+                    $(sectionId).append(html);
+                }
+
+                if (status == 'READY'){
+                    var header = status + ' id: ' + data[i].id + ' Total: ' + totalSum;
+                    var html = '<div class="card panel-ready">';
+                    html += '<div class="card-header bg-success text-white"> ' + header + '</div>';
+                    html += '<div class="card-body bg-light">';
+                    for (var i in products) {
+                        html += '<ul> ' + products[i].product.name + " x" + products[i].quantity + ' </ul>'
+                    }
+                    html += '</div>'; // closed body
+                    html += '<div class="card-footer bg-success">';
+                    html += '<button id="delivered" formaction=' + deliveredUrl + '>Pick-up</button>';
                     html += '</div>'; //closed footer
                     html += '</div>'; //closed panel
                     $(sectionId).append(html);
@@ -173,8 +202,25 @@
             }
         }
 
+        $('#ready-to-go').click(function (event) {
+            var node = event.target.nodeName;
+            var id = event.target.id;
+            var cl = event.target.className;
+            var parentNode = event.target.parentNode;
+            var parentElement = event.target.parentElement;
+
+            console.log('ready to go node',node);
+            console.log('ready to id',id);
+            console.log('ready to class',cl);
+            console.log('parent node', parentNode);
+            console.log('parent elemtn', parentElement);
+            if (node=='BUTTON'){
+                $('#'+id).closest('.card').remove();
+            }
+        });
+
         function changeStatus() {
-            $('#openOrders,#in-progress').click(function (event) {
+            $('#openOrders,#in-progress,#ready-to-go').click(function (event) {
                 var element = $(event.target.nodeName);
                 var tag = event.target.tagName;
                 var id = event.target.id;
@@ -182,7 +228,7 @@
                 console.log('id', id);
                 if (element.is('BUTTON')) {
                     var link = event.target.getAttribute("formaction");
-                    console.log('PUT link', link);
+                    // console.log('PUT link', link);
                     $.ajax({
                         type: 'PUT',
                         url: link,
@@ -194,7 +240,6 @@
                 }
             });
         }
-
 
         function autocompleteProduct() {
             $('tbody').on('click', function (event) {

@@ -101,7 +101,15 @@ public class OrderController {
         return resourceAssembler.toResource(order);
     }
 
-    @DeleteMapping ("/{id}")
+    @PutMapping ("/{id}/delivered")
+    Resource<Order> orderDelivered(@PathVariable long id){
+        Order order=ordersRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        order.setStatus(OrderStatus.DELIVERED);
+        ordersRepository.save(order);
+        return resourceAssembler.toResource(order);
+    }
+
+    @DeleteMapping ("/{id}/delete")
     public void deleteOrderFromDB(long id){
         Order order=ordersRepository.findById(id).orElseThrow(NoSuchElementException::new);
         order.setStatus(OrderStatus.DELETED);

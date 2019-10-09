@@ -108,7 +108,6 @@
                 url: 'http://localhost:8080/order/',
                 async: true,
                 success: function (data) {
-                    //sort data
                     console.log('success', data);
                     var ordersFetched = data["_embedded"]["orderList"];
                     var ordersOpen = [];
@@ -217,6 +216,8 @@
             if (node=='BUTTON'){
                 $('#'+id).closest('.card').remove();
             }
+
+            // $('.card').remove();
         });
 
         function changeStatus() {
@@ -387,7 +388,6 @@
             window.location.reload();
         });
     });
-
 
 </script>
 </body>

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class Product {
+public class Product extends ResourceSupport {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private Long productId;

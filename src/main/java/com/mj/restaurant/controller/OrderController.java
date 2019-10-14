@@ -3,9 +3,11 @@ package com.mj.restaurant.controller;
 import com.mj.restaurant.model.Order;
 import com.mj.restaurant.model.OrderLine;
 import com.mj.restaurant.model.OrderStatus;
+import com.mj.restaurant.model.Product;
 import com.mj.restaurant.repository.OrderLineRepository;
 import com.mj.restaurant.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
@@ -27,6 +29,9 @@ public class OrderController {
     private OrderLineRepository lineRepository;
 
     @Autowired
+    ProductResourceAssembler productResourceAssembler;
+
+    @Autowired
     public OrderController(OrdersRepository ordersRepository, OrderResourceAssembler resourceAssembler, OrderLineRepository lineRepository) {
         this.ordersRepository = ordersRepository;
         this.resourceAssembler = resourceAssembler;
@@ -36,7 +41,17 @@ public class OrderController {
     @GetMapping ("/{id}")
     public Resource<Order> findOrder(@PathVariable long id){
         Order order=Optional.ofNullable(ordersRepository.findById(id).get()).orElseThrow(NoSuchElementException::new);
-        return resourceAssembler.toResource(order);
+        List products=order.getProducts().stream().collect(Collectors.toList());
+        Resource<Order> resource= resourceAssembler.toResource(order);
+        System.out.println("Resourece " + resource);
+        resource.getContent().getProducts().forEach(
+                p -> {
+                    Product pr=p.getProduct();
+                    pr.add(linkTo(methodOn(ProductController.class).findbyId(p.getId())).withSelfRel());
+                    System.out.println("p= "+ p);
+                }
+        );
+        return resource;
     }
 
     @GetMapping("/all")
